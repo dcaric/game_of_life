@@ -14,18 +14,31 @@
 using namespace std;
 int main() {
     
-    // initializes the game
-    game_of_life gameOfLife;
+    cout << "Welcome to the Game of Life!" << endl;
+    cout << "Press Ctrl+C to stop the game." << endl;
+    cout << "Enter percentage of live cells (0-100):";
+    int percentage;
+    cin >> percentage;
+    if (percentage < 0 || percentage > 100) {
+        cerr << "Percentage must be between 0 and 100." << endl;
+        return 1;
+    }
     
-    for (int i = 0; i < 10; i++) {
+    // initializes the game
+    game_of_life gameOfLife(percentage);
+    
+    int cycle = 0;
+    //for (int i = 0; i < 500; i++) {
+    while (true) {
+        cycle++;
+        // draws the game
+        gameOfLife.draw(cycle);
+        
         // runs next generation
         gameOfLife.next_generation();
         
-        // draws the game
-        gameOfLife.draw();
-        
         // waits for 2 second
-        this_thread::sleep_for(std::chrono::milliseconds(2000));
+        this_thread::sleep_for(std::chrono::milliseconds(100));
         
         // Clears the console for windos and macos/linux
         #ifdef _WIN32
@@ -42,9 +55,7 @@ int main() {
                 system("clear");
             }
         #endif
-
-        
     }
-
+    
     return 0;
 }

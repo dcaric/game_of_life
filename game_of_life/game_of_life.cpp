@@ -7,11 +7,15 @@
 
 #include "game_of_life.hpp"
 #include <time.h>
+#include <vector>
+#include <algorithm>
+#include <random>
 
 /**
  Sets initial game with 25% cells live
  */
-game_of_life::game_of_life() {
+
+game_of_life::game_of_life(int percentage) {
     srand(time(NULL));
     
     // set all to false
@@ -22,30 +26,33 @@ game_of_life::game_of_life() {
         }
     }
     
-    // generate array of ROWS * COLS where 25% elements will be true and the rest false
-    int totalTrueCells = ROWS * COLS * 0.25;
+    // generate array of ROWS * COLS where some percentage elements will be true and the rest false
+    int totalTrueCells = ROWS * COLS * percentage / 100;
     cout << "Total true cells: " << totalTrueCells << endl;
     
-    // generate ROWS * COLS *0.25 numbers between 1 and ROWS * COLS
+    // generate ROWS * COLS * percentage/100 numbers between 1 and ROWS * COLS but without duplicates
     for (int i = 0; i < totalTrueCells; i++) {
         int random = rand() % (ROWS * COLS);
         int row = random / COLS;
         int col = random % COLS;
+        // if the cell is already true, generate another random number
+        while (_generation[row][col]) {
+            random = rand() % (ROWS * COLS);
+            row = random / COLS;
+            col = random % COLS;
+        }
         _generation[row][col] = true;
     }
     
     // print the array
-    /*
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             cout << _generation[i][j] << " ";
         }
         cout << endl;
     }
-     */
-
+    
 }
-
 
 /**
  Runs next game iterraion
@@ -93,6 +100,22 @@ void game_of_life::next_generation() {
         }
     }
     
+    // check if the current generation is the same as the next generation
+    bool same = true;
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLS; j++) {
+            if (_generation[i][j] != _next_generation[i][j]) {
+                same = false;
+                break;
+            }
+        }
+    }
+    if (same) {
+        cout << "The game is over. No changes in the next generation." << endl;
+        exit(0);
+    }
+    
+    
     // copy the next generation to the current generation
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
@@ -105,7 +128,8 @@ void game_of_life::next_generation() {
 /**
  Draws the current generation
  */
-void game_of_life::draw() {
+void game_of_life::draw(int cycle) {
+    cout << "Generation number: " << cycle << endl;
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             if (_generation[i][j]) {

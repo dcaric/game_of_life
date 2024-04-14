@@ -17,15 +17,16 @@ class game_of_life {
 private:
     static const unsigned int COLS = 40;
     static const unsigned int ROWS = 20;
+    static const unsigned int PERCENTAGE = 35;
     bool _generation[ROWS][COLS];
     bool _next_generation[ROWS][COLS];
     bool random_value();
     bool cell_taken(int i, int j);
 
 public:
-    game_of_life();
+    game_of_life(int percentage);
     void next_generation();
-    void draw();
+    void draw(int cycle);
 };
 
 #endif
