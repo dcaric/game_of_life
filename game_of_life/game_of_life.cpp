@@ -55,10 +55,19 @@ void game_of_life::next_generation() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             
+            
+            /**
+             for cell (i, j) the neighbours are:
+             
+            (i-i, j-1)          (i-i, j)           (i-i, j+1)
+            (i, j-1)            (i, j)              (i, j+1)
+            (i + 1, j-1)      (i + 1, j)        ( i + 1, j+1)
+             */
+            
             // count the number of live neighbours
             int liveNeighbours = 0;
-            for (int k = i - 1; k <= i + 1; k++) {
-                for (int l = j - 1; l <= j + 1; l++) {
+            for (int k = i - 1; k <= i + 1; k++) { // rows
+                for (int l = j - 1; l <= j + 1; l++) { // columns
                     if (k >= 0 && k < ROWS && l >= 0 && l < COLS) {
                         if (_generation[k][l] && (k != i || l != j)) {
                             liveNeighbours++;
@@ -67,7 +76,7 @@ void game_of_life::next_generation() {
                 }
             }
             
-            // apply the rules
+            // apply the rules and set the next generation
             if (_generation[i][j]) {
                 if (liveNeighbours < 2 || liveNeighbours > 3) {
                     _next_generation[i][j] = false;
@@ -100,7 +109,7 @@ void game_of_life::draw() {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             if (_generation[i][j]) {
-                cout << "X";
+                cout << "o";
             } else {
                 cout << " ";
             }
